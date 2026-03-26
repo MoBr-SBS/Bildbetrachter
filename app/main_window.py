@@ -1,65 +1,69 @@
 """
 MainWindow
+
 Hauptfenster der Anwendung. Orchestriert alle Komponenten:
 Toolbar, Bildanzeige, Sidebar, Statusleiste und Thumbnail-Leiste.
 """
 
 from PyQt6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QVBoxLayout
 
-from app.components import ImageToolbar, ImageViewer, Sidebar, ImageStatusBar, ThumbnailBar
+from app.components import ImageToolbar, ImageViewer, Sidebar, ImageStatusBar
 from app.services import ImageManager
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.setObjectName("MainWindow")
         self.setWindowTitle("Bildbetrachter")
-        self.resize(1000, 700)
+        self.resize(1200, 760)
+
         self._image_manager = ImageManager()
+
         self._build_ui()
         self._connect_signals()
 
     # ------------------------------------------------------------------ #
     # UI-Aufbau
     # ------------------------------------------------------------------ #
-
     def _build_ui(self):
-        # Toolbar (oben)
+        # Toolbar
         self.toolbar = ImageToolbar(self)
         self.addToolBar(self.toolbar)
 
-        # Statusleiste (unten)
+        # Statusbar
         self.status_bar = ImageStatusBar(self)
         self.setStatusBar(self.status_bar)
 
-        # Bildanzeige + Sidebar nebeneinander
+        # Hauptbereiche
         self.viewer = ImageViewer()
         self.sidebar = Sidebar()
 
-        viewer_row = QWidget()
-        viewer_layout = QHBoxLayout(viewer_row)
-        viewer_layout.setContentsMargins(0, 0, 0, 0)
-        viewer_layout.setSpacing(0)
-        viewer_layout.addWidget(self.viewer, stretch=1)
-        viewer_layout.addWidget(self.sidebar)
+        # Mittlerer Bereich: Viewer links, Sidebar rechts
+        content_row = QWidget()
+        content_row.setObjectName("ContentRow")
 
-        # Thumbnail-Leiste unterhalb der Bildanzeige
-        self.thumbnail_bar = ThumbnailBar()
+        content_layout = QHBoxLayout(content_row)
+        content_layout.setContentsMargins(14, 14, 14, 14)
+        content_layout.setSpacing(14)
+        content_layout.addWidget(self.viewer, stretch=1)
+        content_layout.addWidget(self.sidebar, stretch=0)
 
-        # Alles in eine vertikale Anordnung
+        # Zentrales Layout
         central = QWidget()
+        central.setObjectName("CentralWidget")
+
         central_layout = QVBoxLayout(central)
         central_layout.setContentsMargins(0, 0, 0, 0)
         central_layout.setSpacing(0)
-        central_layout.addWidget(viewer_row, stretch=1)
-        central_layout.addWidget(self.thumbnail_bar)
+        central_layout.addWidget(content_row, stretch=1)
 
         self.setCentralWidget(central)
 
     # ------------------------------------------------------------------ #
     # Signal-Verbindungen
     # ------------------------------------------------------------------ #
-
     def _connect_signals(self):
         # Toolbar → Aktionen
         self.toolbar.open_requested.connect(self._on_open_requested)
@@ -70,36 +74,37 @@ class MainWindow(QMainWindow):
         self.toolbar.previous_requested.connect(self._on_previous)
         self.toolbar.next_requested.connect(self._on_next)
 
-        # Viewer → Statusleiste & Sidebar
+        # Viewer → Sidebar + Statusbar
         self.viewer.image_loaded.connect(self.sidebar.update_info)
         self.viewer.image_loaded.connect(self.status_bar.set_filename)
         self.viewer.zoom_changed.connect(self.status_bar.set_zoom)
 
-        # Thumbnail-Leiste → Bildwechsel
-        self.thumbnail_bar.thumbnail_clicked.connect(self._on_thumbnail_selected)
+        # Sidebar-ThumbnailBar → Bildwechsel
+        self.sidebar.thumbnail_bar.thumbnail_clicked.connect(self._on_thumbnail_selected)
 
     # ------------------------------------------------------------------ #
     # Slots
     # ------------------------------------------------------------------ #
-
     def _on_open_requested(self, filepath: str):
-        """Datei öffnen: Ordner einlesen, Thumbnails laden, Bild anzeigen."""
+        """Datei öffnen: Ordner einlesen, Vorschaubilder laden, Bild anzeigen."""
         self._image_manager.load_directory(filepath)
-        self.thumbnail_bar.load_thumbnails(
+
+        self.sidebar.thumbnail_bar.load_thumbnails(
             self._image_manager.files,
             self._image_manager.current_index,
         )
+
         self.toolbar.enable_navigation(self._image_manager.count > 1)
         self._show_current()
 
     def _on_previous(self):
         self._image_manager.previous()
-        self.thumbnail_bar.set_active(self._image_manager.current_index)
+        self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
         self._show_current()
 
     def _on_next(self):
         self._image_manager.next()
-        self.thumbnail_bar.set_active(self._image_manager.current_index)
+        self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
         self._show_current()
 
     def _on_thumbnail_selected(self, index: int):
@@ -111,3 +116,4 @@ class MainWindow(QMainWindow):
         current = self._image_manager.current()
         if current:
             self.viewer.load_image(str(current))
+            self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
