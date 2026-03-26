@@ -18,15 +18,20 @@ from PyQt6.QtWidgets import (
 )
 
 
+THUMB_SIZE = 66
+
+
 class ClickableThumbnail(QFrame):
     clicked = pyqtSignal(int)
 
     def __init__(self, index: int, image_path: str, parent=None):
         super().__init__(parent)
         self.index = index
+
         self.setObjectName("ThumbnailItem")
         self.setProperty("active", False)
-        self.setFixedSize(66, 66)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setFixedSize(THUMB_SIZE, THUMB_SIZE)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(2, 2, 2, 2)
@@ -34,13 +39,13 @@ class ClickableThumbnail(QFrame):
 
         self.label = QLabel()
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.label.setFixedSize(62, 62)
+        self.label.setFixedSize(THUMB_SIZE - 4, THUMB_SIZE - 4)
 
         pixmap = QPixmap(image_path)
         if not pixmap.isNull():
             pixmap = pixmap.scaled(
-                58,
-                58,
+                THUMB_SIZE - 8,
+                THUMB_SIZE - 8,
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation,
             )
@@ -49,7 +54,8 @@ class ClickableThumbnail(QFrame):
         layout.addWidget(self.label)
 
     def mousePressEvent(self, event):
-        self.clicked.emit(self.index)
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit(self.index)
         super().mousePressEvent(event)
 
 
@@ -61,9 +67,12 @@ class ThumbnailBar(QScrollArea):
 
         self.setObjectName("ThumbnailBar")
         self.setWidgetResizable(True)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
         self.container = QWidget()
         self.container.setObjectName("ThumbnailBarContainer")
+
         self.grid = QGridLayout(self.container)
         self.grid.setContentsMargins(0, 0, 0, 0)
         self.grid.setHorizontalSpacing(8)
@@ -71,9 +80,9 @@ class ThumbnailBar(QScrollArea):
 
         self.setWidget(self.container)
 
-        self._items = []
+        self._items: list[ClickableThumbnail] = []
 
-    def load_thumbnails(self, files, active_index=0):
+    def load_thumbnails(self, files: list[Path], active_index: int = 0) -> None:
         self.clear()
 
         for index, file_path in enumerate(files):
@@ -87,14 +96,14 @@ class ThumbnailBar(QScrollArea):
 
         self.set_active(active_index)
 
-    def set_active(self, index: int):
+    def set_active(self, index: int) -> None:
         for i, item in enumerate(self._items):
             item.setProperty("active", i == index)
             item.style().unpolish(item)
             item.style().polish(item)
             item.update()
 
-    def clear(self):
+    def clear(self) -> None:
         while self.grid.count():
             child = self.grid.takeAt(0)
             widget = child.widget()
