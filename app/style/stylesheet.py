@@ -1,16 +1,26 @@
 """
 stylesheet.py
 
-Kompakter dunkler Stil mit schmaler rechter Infoleiste.
+Dunkles, kompaktes UI für den Bildbetrachter.
+Fokus:
+- schmale rechte Sidebar
+- klare Dateiinfo
+- Vorschau direkt darunter
+- aufgeräumte Toolbar
+- ruhiger Viewer
 """
 
 from PyQt6.QtWidgets import QApplication
 
 
 STYLESHEET = """
+/* ---------------------------------------------------------- */
+/* Basis */
+/* ---------------------------------------------------------- */
+
 QMainWindow,
 QWidget {
-    background-color: #2f2f2f;
+    background-color: #262626;
     color: #e8e8e8;
     font-family: "Segoe UI", Arial, sans-serif;
     font-size: 12px;
@@ -18,16 +28,20 @@ QWidget {
 
 QWidget#CentralWidget,
 QWidget#ContentRow {
-    background-color: #2f2f2f;
+    background-color: #262626;
 }
 
+
+/* ---------------------------------------------------------- */
 /* Toolbar */
+/* ---------------------------------------------------------- */
+
 QToolBar {
-    background-color: #2f2f2f;
+    background-color: #2c2c2c;
     border: none;
     border-bottom: 1px solid #3b3b3b;
     spacing: 6px;
-    padding: 4px 6px;
+    padding: 6px 8px;
 }
 
 QToolBar::separator {
@@ -36,50 +50,61 @@ QToolBar::separator {
 }
 
 QToolButton {
-    background-color: #3a3a3a;
+    background-color: #343434;
     color: #f0f0f0;
-    border: 1px solid #4a4a4a;
+    border: 1px solid #474747;
     border-radius: 4px;
     padding: 4px 10px;
     min-height: 24px;
 }
 
 QToolButton:hover {
-    background-color: #454545;
-    border: 1px solid #5d5d5d;
+    background-color: #404040;
+    border: 1px solid #5c5c5c;
 }
 
 QToolButton:pressed {
-    background-color: #2b2b2b;
+    background-color: #2a2a2a;
+    border: 1px solid #5c5c5c;
 }
 
 QToolButton:disabled {
-    color: #8a8a8a;
-    background-color: #343434;
-    border: 1px solid #454545;
+    color: #8b8b8b;
+    background-color: #303030;
+    border: 1px solid #404040;
 }
 
+
+/* ---------------------------------------------------------- */
 /* Viewer */
+/* ---------------------------------------------------------- */
+
 QScrollArea {
-    background-color: #262626;
-    border: 1px solid #3b3b3b;
+    background-color: #202020;
+    border: 1px solid #343434;
 }
 
 QLabel#viewer_placeholder {
     color: #9c9c9c;
     font-size: 14px;
+    padding: 20px;
 }
 
+
+/* ---------------------------------------------------------- */
 /* Sidebar */
+/* ---------------------------------------------------------- */
+
 QWidget#Sidebar {
-    background-color: #2f2f2f;
-    border-left: 1px solid #3b3b3b;
+    background-color: #2b2b2b;
+    border-left: 1px solid #3a3a3a;
 }
 
 QLabel#sidebar_section_header {
-    color: #d7d7d7;
+    color: #d8d8d8;
     font-size: 13px;
     font-weight: 700;
+    letter-spacing: 0.3px;
     padding: 0;
     margin: 0;
 }
@@ -105,9 +130,13 @@ QLabel#sidebar_value {
     margin: 0;
 }
 
+
+/* ---------------------------------------------------------- */
 /* Thumbnail-Bereich */
-QScrollArea#SidebarThumbnailBar,
-QScrollArea#ThumbnailBar {
+/* ---------------------------------------------------------- */
+
+QScrollArea#ThumbnailBar,
+QScrollArea#SidebarThumbnailBar {
     background-color: transparent;
     border: none;
 }
@@ -118,7 +147,7 @@ QWidget#ThumbnailBarContainer {
 
 QFrame#ThumbnailItem {
     background-color: #111111;
-    border: 1px solid #3a3a3a;
+    border: 1px solid #3d3d3d;
     border-radius: 2px;
 }
 
@@ -126,13 +155,18 @@ QFrame#ThumbnailItem:hover {
     border: 1px solid #4d94ff;
 }
 
-QFrame#ThumbnailItem[active=true] {
+QFrame#ThumbnailItem[active="true"] {
     border: 1px solid #2f8cff;
+    background-color: #161616;
 }
 
+
+/* ---------------------------------------------------------- */
 /* Statusbar */
+/* ---------------------------------------------------------- */
+
 QStatusBar {
-    background-color: #2f2f2f;
+    background-color: #2a2a2a;
     color: #f0f0f0;
     border-top: 1px solid #3b3b3b;
 }
@@ -141,17 +175,25 @@ QStatusBar::item {
     border: none;
 }
 
+
+/* ---------------------------------------------------------- */
 /* Scrollbars */
+/* ---------------------------------------------------------- */
+
 QScrollBar:vertical {
-    background: #2f2f2f;
+    background: #292929;
     width: 10px;
     margin: 0;
 }
 
 QScrollBar::handle:vertical {
-    background: #5a5a5a;
-    min-height: 20px;
+    background: #5d5d5d;
+    min-height: 24px;
     border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #727272;
 }
 
 QScrollBar::add-line:vertical,
@@ -165,15 +207,19 @@ QScrollBar::sub-page:vertical {
 }
 
 QScrollBar:horizontal {
-    background: #2f2f2f;
+    background: #292929;
     height: 10px;
     margin: 0;
 }
 
 QScrollBar::handle:horizontal {
-    background: #5a5a5a;
-    min-width: 20px;
+    background: #5d5d5d;
+    min-width: 24px;
     border-radius: 4px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #727272;
 }
 
 QScrollBar::add-line:horizontal,
@@ -184,6 +230,40 @@ QScrollBar::sub-line:horizontal {
 QScrollBar::add-page:horizontal,
 QScrollBar::sub-page:horizontal {
     background: transparent;
+}
+
+
+/* ---------------------------------------------------------- */
+/* Buttons allgemein */
+/* ---------------------------------------------------------- */
+
+QPushButton {
+    background-color: #343434;
+    color: #f0f0f0;
+    border: 1px solid #474747;
+    border-radius: 4px;
+    padding: 4px 10px;
+}
+
+QPushButton:hover {
+    background-color: #404040;
+    border: 1px solid #5c5c5c;
+}
+
+QPushButton:pressed {
+    background-color: #2a2a2a;
+}
+
+
+/* ---------------------------------------------------------- */
+/* Tooltip */
+/* ---------------------------------------------------------- */
+
+QToolTip {
+    background-color: #303030;
+    color: #f5f5f5;
+    border: 1px solid #4c4c4c;
+    padding: 4px 6px;
 }
 """
 
