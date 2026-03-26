@@ -2,7 +2,7 @@
 MainWindow
 
 Hauptfenster der Anwendung. Orchestriert alle Komponenten:
-Toolbar, Bildanzeige, Sidebar, Statusleiste und Thumbnail-Leiste.
+Toolbar, Bildanzeige, Sidebar und Statusleiste.
 """
 
 from PyQt6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QVBoxLayout
@@ -17,40 +17,32 @@ class MainWindow(QMainWindow):
 
         self.setObjectName("MainWindow")
         self.setWindowTitle("Bildbetrachter")
-        self.resize(1200, 760)
+        self.resize(1280, 760)
 
         self._image_manager = ImageManager()
 
         self._build_ui()
         self._connect_signals()
 
-    # ------------------------------------------------------------------ #
-    # UI-Aufbau
-    # ------------------------------------------------------------------ #
     def _build_ui(self):
-        # Toolbar
         self.toolbar = ImageToolbar(self)
         self.addToolBar(self.toolbar)
 
-        # Statusbar
         self.status_bar = ImageStatusBar(self)
         self.setStatusBar(self.status_bar)
 
-        # Hauptbereiche
         self.viewer = ImageViewer()
         self.sidebar = Sidebar()
 
-        # Mittlerer Bereich: Viewer links, Sidebar rechts
         content_row = QWidget()
         content_row.setObjectName("ContentRow")
 
         content_layout = QHBoxLayout(content_row)
-        content_layout.setContentsMargins(14, 14, 14, 14)
-        content_layout.setSpacing(14)
+        content_layout.setContentsMargins(10, 10, 10, 10)
+        content_layout.setSpacing(10)
         content_layout.addWidget(self.viewer, stretch=1)
         content_layout.addWidget(self.sidebar, stretch=0)
 
-        # Zentrales Layout
         central = QWidget()
         central.setObjectName("CentralWidget")
 
@@ -61,11 +53,7 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(central)
 
-    # ------------------------------------------------------------------ #
-    # Signal-Verbindungen
-    # ------------------------------------------------------------------ #
     def _connect_signals(self):
-        # Toolbar → Aktionen
         self.toolbar.open_requested.connect(self._on_open_requested)
         self.toolbar.zoom_in_requested.connect(self.viewer.zoom_in)
         self.toolbar.zoom_out_requested.connect(self.viewer.zoom_out)
@@ -74,19 +62,15 @@ class MainWindow(QMainWindow):
         self.toolbar.previous_requested.connect(self._on_previous)
         self.toolbar.next_requested.connect(self._on_next)
 
-        # Viewer → Sidebar + Statusbar
         self.viewer.image_loaded.connect(self.sidebar.update_info)
         self.viewer.image_loaded.connect(self.status_bar.set_filename)
         self.viewer.zoom_changed.connect(self.status_bar.set_zoom)
 
-        # Sidebar-ThumbnailBar → Bildwechsel
-        self.sidebar.thumbnail_bar.thumbnail_clicked.connect(self._on_thumbnail_selected)
+        self.sidebar.thumbnail_bar.thumbnail_clicked.connect(
+            self._on_thumbnail_selected
+        )
 
-    # ------------------------------------------------------------------ #
-    # Slots
-    # ------------------------------------------------------------------ #
     def _on_open_requested(self, filepath: str):
-        """Datei öffnen: Ordner einlesen, Vorschaubilder laden, Bild anzeigen."""
         self._image_manager.load_directory(filepath)
 
         self.sidebar.thumbnail_bar.load_thumbnails(
@@ -112,8 +96,9 @@ class MainWindow(QMainWindow):
         self._show_current()
 
     def _show_current(self):
-        """Lädt das aktuell im ImageManager ausgewählte Bild in den Viewer."""
         current = self._image_manager.current()
         if current:
             self.viewer.load_image(str(current))
-            self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
+            self.sidebar.thumbnail_bar.set_active(
+                self._image_manager.current_index
+            )
