@@ -1,8 +1,7 @@
 """
 stylesheet.py
 
-Kompakter, dunkler Stil passend zur Referenz:
-schmale rechte Infoleiste mit nüchterner Dateiinfo.
+Kompakter dunkler Stil mit schmaler rechter Infoleiste.
 """
 
 from PyQt6.QtWidgets import QApplication
@@ -17,7 +16,6 @@ QWidget {
     font-size: 12px;
 }
 
-/* Hauptbereich */
 QWidget#CentralWidget,
 QWidget#ContentRow {
     background-color: #2f2f2f;
@@ -28,8 +26,13 @@ QToolBar {
     background-color: #2f2f2f;
     border: none;
     border-bottom: 1px solid #3b3b3b;
-    spacing: 4px;
+    spacing: 6px;
     padding: 4px 6px;
+}
+
+QToolBar::separator {
+    width: 8px;
+    background: transparent;
 }
 
 QToolButton {
@@ -37,7 +40,8 @@ QToolButton {
     color: #f0f0f0;
     border: 1px solid #4a4a4a;
     border-radius: 4px;
-    padding: 4px 8px;
+    padding: 4px 10px;
+    min-height: 24px;
 }
 
 QToolButton:hover {
@@ -49,10 +53,21 @@ QToolButton:pressed {
     background-color: #2b2b2b;
 }
 
+QToolButton:disabled {
+    color: #8a8a8a;
+    background-color: #343434;
+    border: 1px solid #454545;
+}
+
 /* Viewer */
 QScrollArea {
     background-color: #262626;
     border: 1px solid #3b3b3b;
+}
+
+QLabel#viewer_placeholder {
+    color: #9c9c9c;
+    font-size: 14px;
 }
 
 /* Sidebar */
@@ -88,6 +103,31 @@ QLabel#sidebar_value {
     font-weight: 700;
     padding: 0;
     margin: 0;
+}
+
+/* Thumbnail-Bereich */
+QScrollArea#SidebarThumbnailBar,
+QScrollArea#ThumbnailBar {
+    background-color: transparent;
+    border: none;
+}
+
+QWidget#ThumbnailBarContainer {
+    background-color: transparent;
+}
+
+QFrame#ThumbnailItem {
+    background-color: #111111;
+    border: 1px solid #3a3a3a;
+    border-radius: 2px;
+}
+
+QFrame#ThumbnailItem:hover {
+    border: 1px solid #4d94ff;
+}
+
+QFrame#ThumbnailItem[active=true] {
+    border: 1px solid #2f8cff;
 }
 
 /* Statusbar */
@@ -144,44 +184,6 @@ QScrollBar::sub-line:horizontal {
 QScrollBar::add-page:horizontal,
 QScrollBar::sub-page:horizontal {
     background: transparent;
-}
-
-/* Thumbnail-Bereich */
-QScrollArea#SidebarThumbnailBar,
-QScrollArea#ThumbnailBar {
-    background-color: transparent;
-    border: none;
-}
-
-QWidget#ThumbnailBarContainer {
-    background-color: transparent;
-}
-
-QFrame#ThumbnailItem {
-    background-color: #111111;
-    border: 1px solid #3a3a3a;
-    border-radius: 2px;
-}
-
-QFrame#ThumbnailItem:hover {
-    border: 1px solid #4d94ff;
-}
-
-QFrame#ThumbnailItem[active=true] {
-    border: 1px solid #2f8cff;
-}
-
-/* Buttons allgemein */
-QPushButton {
-    background-color: #3a3a3a;
-    color: #f0f0f0;
-    border: 1px solid #4a4a4a;
-    border-radius: 4px;
-    padding: 4px 8px;
-}
-
-QPushButton:hover {
-    background-color: #454545;
 }
 """
 
