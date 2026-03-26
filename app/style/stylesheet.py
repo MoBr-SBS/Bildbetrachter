@@ -1,13 +1,12 @@
 """
 stylesheet.py
 
-Dunkles, kompaktes UI für den Bildbetrachter.
-Fokus:
-- schmale rechte Sidebar
-- klare Dateiinfo
-- Vorschau direkt darunter
-- aufgeräumte Toolbar
-- ruhiger Viewer
+Zentrales Stylesheet für den Bildbetrachter.
+Dunkles, kompaktes UI mit:
+- ruhiger Toolbar
+- klarer rechter Sidebar
+- Thumbnail-Raster rechts
+- sauberer Statusbar
 """
 
 from PyQt6.QtWidgets import QApplication
@@ -36,40 +35,41 @@ QWidget#ContentRow {
 /* Toolbar */
 /* ---------------------------------------------------------- */
 
-QToolBar {
-    background-color: #2c2c2c;
+QToolBar#MainToolbar {
+    background-color: #2b2b2b;
     border: none;
-    border-bottom: 1px solid #3b3b3b;
+    border-bottom: 1px solid #3a3a3a;
     spacing: 6px;
     padding: 6px 8px;
 }
 
-QToolBar::separator {
-    width: 8px;
+QToolBar#MainToolbar::separator {
+    width: 10px;
     background: transparent;
 }
 
-QToolButton {
+QToolBar#MainToolbar QToolButton {
     background-color: #343434;
-    color: #f0f0f0;
+    color: #f2f2f2;
     border: 1px solid #474747;
-    border-radius: 4px;
-    padding: 4px 10px;
-    min-height: 24px;
+    border-radius: 5px;
+    padding: 5px 12px;
+    min-height: 26px;
+    font-weight: 600;
 }
 
-QToolButton:hover {
+QToolBar#MainToolbar QToolButton:hover {
     background-color: #404040;
-    border: 1px solid #5c5c5c;
+    border: 1px solid #5e5e5e;
 }
 
-QToolButton:pressed {
-    background-color: #2a2a2a;
-    border: 1px solid #5c5c5c;
+QToolBar#MainToolbar QToolButton:pressed {
+    background-color: #262626;
+    border: 1px solid #6a6a6a;
 }
 
-QToolButton:disabled {
-    color: #8b8b8b;
+QToolBar#MainToolbar QToolButton:disabled {
+    color: #8c8c8c;
     background-color: #303030;
     border: 1px solid #404040;
 }
@@ -115,7 +115,7 @@ QFrame#sidebar_info_frame {
 }
 
 QLabel#sidebar_key {
-    color: #d0d0d0;
+    color: #cfcfcf;
     font-size: 12px;
     font-weight: 600;
     padding: 0;
@@ -234,7 +234,7 @@ QScrollBar::sub-page:horizontal {
 
 
 /* ---------------------------------------------------------- */
-/* Buttons allgemein */
+/* Allgemeine Buttons */
 /* ---------------------------------------------------------- */
 
 QPushButton {
