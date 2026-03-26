@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self._build_ui()
         self._connect_signals()
 
-    def _build_ui(self):
+    def _build_ui(self) -> None:
         self.toolbar = ImageToolbar(self)
         self.addToolBar(self.toolbar)
 
@@ -38,8 +38,8 @@ class MainWindow(QMainWindow):
         content_row.setObjectName("ContentRow")
 
         content_layout = QHBoxLayout(content_row)
-        content_layout.setContentsMargins(10, 10, 10, 10)
-        content_layout.setSpacing(10)
+        content_layout.setContentsMargins(8, 8, 8, 8)
+        content_layout.setSpacing(8)
         content_layout.addWidget(self.viewer, stretch=1)
         content_layout.addWidget(self.sidebar, stretch=0)
 
@@ -49,11 +49,11 @@ class MainWindow(QMainWindow):
         central_layout = QVBoxLayout(central)
         central_layout.setContentsMargins(0, 0, 0, 0)
         central_layout.setSpacing(0)
-        central_layout.addWidget(content_row, stretch=1)
+        central_layout.addWidget(content_row)
 
         self.setCentralWidget(central)
 
-    def _connect_signals(self):
+    def _connect_signals(self) -> None:
         self.toolbar.open_requested.connect(self._on_open_requested)
         self.toolbar.zoom_in_requested.connect(self.viewer.zoom_in)
         self.toolbar.zoom_out_requested.connect(self.viewer.zoom_out)
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
             self._on_thumbnail_selected
         )
 
-    def _on_open_requested(self, filepath: str):
+    def _on_open_requested(self, filepath: str) -> None:
         self._image_manager.load_directory(filepath)
 
         self.sidebar.thumbnail_bar.load_thumbnails(
@@ -81,24 +81,22 @@ class MainWindow(QMainWindow):
         self.toolbar.enable_navigation(self._image_manager.count > 1)
         self._show_current()
 
-    def _on_previous(self):
+    def _on_previous(self) -> None:
         self._image_manager.previous()
-        self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
         self._show_current()
 
-    def _on_next(self):
+    def _on_next(self) -> None:
         self._image_manager.next()
-        self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
         self._show_current()
 
-    def _on_thumbnail_selected(self, index: int):
+    def _on_thumbnail_selected(self, index: int) -> None:
         self._image_manager.select(index)
         self._show_current()
 
-    def _show_current(self):
+    def _show_current(self) -> None:
         current = self._image_manager.current()
-        if current:
-            self.viewer.load_image(str(current))
-            self.sidebar.thumbnail_bar.set_active(
-                self._image_manager.current_index
-            )
+        if not current:
+            return
+
+        self.viewer.load_image(str(current))
+        self.sidebar.thumbnail_bar.set_active(self._image_manager.current_index)
