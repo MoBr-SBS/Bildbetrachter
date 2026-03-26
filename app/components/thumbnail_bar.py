@@ -18,7 +18,8 @@ from PyQt6.QtWidgets import (
 )
 
 
-THUMB_SIZE = 66
+THUMB_SIZE = 64
+THUMB_COLUMNS = 2
 
 
 class ClickableThumbnail(QFrame):
@@ -69,6 +70,7 @@ class ThumbnailBar(QScrollArea):
         self.setWidgetResizable(True)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.setFrameShape(QScrollArea.Shape.NoFrame)
 
         self.container = QWidget()
         self.container.setObjectName("ThumbnailBarContainer")
@@ -89,10 +91,14 @@ class ThumbnailBar(QScrollArea):
             item = ClickableThumbnail(index, str(file_path))
             item.clicked.connect(self.thumbnail_clicked.emit)
 
-            row = index // 2
-            col = index % 2
+            row = index // THUMB_COLUMNS
+            col = index % THUMB_COLUMNS
+
             self.grid.addWidget(item, row, col)
             self._items.append(item)
+
+        self.grid.setColumnStretch(0, 1)
+        self.grid.setColumnStretch(1, 1)
 
         self.set_active(active_index)
 
@@ -107,6 +113,6 @@ class ThumbnailBar(QScrollArea):
         while self.grid.count():
             child = self.grid.takeAt(0)
             widget = child.widget()
-            if widget:
+            if widget is not None:
                 widget.deleteLater()
         self._items.clear()
