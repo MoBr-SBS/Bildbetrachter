@@ -3,7 +3,7 @@ Sidebar
 
 Kompakte rechte Seitenleiste:
 - DATEIINFO oben
-- Werte rechts neben den Labels
+- Werte direkt rechts neben den Labels
 - VORSCHAU darunter als 2-spaltiges Raster
 """
 
@@ -36,12 +36,9 @@ class Sidebar(QWidget):
 
     def _build_ui(self):
         outer_layout = QVBoxLayout(self)
-        outer_layout.setContentsMargins(10, 10, 10, 10)
+        outer_layout.setContentsMargins(12, 12, 12, 12)
         outer_layout.setSpacing(10)
 
-        # ------------------------------------------------------------
-        # DATEIINFO
-        # ------------------------------------------------------------
         self.info_title = QLabel("DATEIINFO")
         self.info_title.setObjectName("sidebar_section_header")
         outer_layout.addWidget(self.info_title)
@@ -80,9 +77,6 @@ class Sidebar(QWidget):
         info_grid.setColumnStretch(0, 0)
         info_grid.setColumnStretch(1, 1)
 
-        # ------------------------------------------------------------
-        # VORSCHAU
-        # ------------------------------------------------------------
         self.preview_title = QLabel("VORSCHAU")
         self.preview_title.setObjectName("sidebar_section_header")
         outer_layout.addWidget(self.preview_title)
