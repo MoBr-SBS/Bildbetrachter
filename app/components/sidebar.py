@@ -34,11 +34,12 @@ class Sidebar(QWidget):
 
         self._build_ui()
 
-    def _build_ui(self):
+    def _build_ui(self) -> None:
         outer_layout = QVBoxLayout(self)
-        outer_layout.setContentsMargins(12, 12, 12, 12)
+        outer_layout.setContentsMargins(10, 10, 10, 10)
         outer_layout.setSpacing(10)
 
+        # DATEIINFO
         self.info_title = QLabel("DATEIINFO")
         self.info_title.setObjectName("sidebar_section_header")
         outer_layout.addWidget(self.info_title)
@@ -77,6 +78,7 @@ class Sidebar(QWidget):
         info_grid.setColumnStretch(0, 0)
         info_grid.setColumnStretch(1, 1)
 
+        # VORSCHAU
         self.preview_title = QLabel("VORSCHAU")
         self.preview_title.setObjectName("sidebar_section_header")
         outer_layout.addWidget(self.preview_title)
@@ -85,13 +87,13 @@ class Sidebar(QWidget):
         self.thumbnail_bar.setObjectName("SidebarThumbnailBar")
         outer_layout.addWidget(self.thumbnail_bar, stretch=1)
 
-    def update_info(self, metadata: dict):
-        filename = metadata.get("filename", "—")
+    def update_info(self, metadata: dict) -> None:
+        filename = str(metadata.get("filename", "—"))
         size_kb = metadata.get("size_kb", "—")
         width = metadata.get("width", "—")
         height = metadata.get("height", "—")
 
-        self.lbl_name_val.setText(str(filename))
+        self.lbl_name_val.setText(filename)
         self.lbl_size_val.setText(f"{size_kb} KB")
         self.lbl_width_val.setText(f"{width} px")
         self.lbl_height_val.setText(f"{height} px")
