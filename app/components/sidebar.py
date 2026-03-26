@@ -1,14 +1,17 @@
 """
 Sidebar
 
-Zeigt Metadaten des aktuell geladenen Bildes an und enthält die
-Vorschaubilder rechts unterhalb der Dateiinfos.
+Kompakte rechte Seitenleiste:
+- DATEIINFO oben
+- Werte rechts neben den Labels
+- VORSCHAU darunter als 2-spaltiges Raster
 """
 
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QLabel,
+    QGridLayout,
     QFrame,
     QSizePolicy,
 )
@@ -17,11 +20,12 @@ from .thumbnail_bar import ThumbnailBar
 
 
 class Sidebar(QWidget):
-    FIXED_WIDTH = 300
+    FIXED_WIDTH = 220
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.setObjectName("Sidebar")
         self.setFixedWidth(self.FIXED_WIDTH)
         self.setSizePolicy(
             QSizePolicy.Policy.Fixed,
@@ -30,88 +34,83 @@ class Sidebar(QWidget):
 
         self._build_ui()
 
-    # ------------------------------------------------------------------ #
-    # UI-Aufbau
-    # ------------------------------------------------------------------ #
     def _build_ui(self):
-        self.setObjectName("Sidebar")
+        outer_layout = QVBoxLayout(self)
+        outer_layout.setContentsMargins(10, 10, 10, 10)
+        outer_layout.setSpacing(10)
 
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(12)
+        # ------------------------------------------------------------
+        # DATEIINFO
+        # ------------------------------------------------------------
+        self.info_title = QLabel("DATEIINFO")
+        self.info_title.setObjectName("sidebar_section_header")
+        outer_layout.addWidget(self.info_title)
 
-        # Titel
-        title = QLabel("Dateiinfo")
-        title.setObjectName("sidebar_title")
-        layout.addWidget(title)
+        info_frame = QFrame()
+        info_frame.setObjectName("sidebar_info_frame")
+        outer_layout.addWidget(info_frame)
 
-        subtitle = QLabel("Informationen zur aktuellen Datei")
-        subtitle.setObjectName("sidebar_subtitle")
-        layout.addWidget(subtitle)
+        info_grid = QGridLayout(info_frame)
+        info_grid.setContentsMargins(0, 0, 0, 0)
+        info_grid.setHorizontalSpacing(10)
+        info_grid.setVerticalSpacing(4)
 
-        layout.addWidget(self._make_separator())
+        self.lbl_name_key = self._make_key_label("Name")
+        self.lbl_size_key = self._make_key_label("Größe")
+        self.lbl_width_key = self._make_key_label("Breite")
+        self.lbl_height_key = self._make_key_label("Höhe")
 
-        # Infoblock
-        self._lbl_name = self._make_value_label("—")
-        self._lbl_size = self._make_value_label("—")
-        self._lbl_dims = self._make_value_label("—")
+        self.lbl_name_val = self._make_value_label("—")
+        self.lbl_size_val = self._make_value_label("—")
+        self.lbl_width_val = self._make_value_label("—")
+        self.lbl_height_val = self._make_value_label("—")
 
-        for key, lbl in [
-            ("Name", self._lbl_name),
-            ("Dateigröße", self._lbl_size),
-            ("Abmessungen", self._lbl_dims),
-        ]:
-            layout.addWidget(self._make_key_label(key))
-            layout.addWidget(lbl)
+        info_grid.addWidget(self.lbl_name_key, 0, 0)
+        info_grid.addWidget(self.lbl_name_val, 0, 1)
 
-        layout.addSpacing(8)
+        info_grid.addWidget(self.lbl_size_key, 1, 0)
+        info_grid.addWidget(self.lbl_size_val, 1, 1)
 
-        # Vorschau-Titel
-        preview_title = QLabel("Bildvorschau")
-        preview_title.setObjectName("sidebar_section_title")
-        layout.addWidget(preview_title)
+        info_grid.addWidget(self.lbl_width_key, 2, 0)
+        info_grid.addWidget(self.lbl_width_val, 2, 1)
 
-        preview_hint = QLabel("Alle Bilder im aktuellen Ordner")
-        preview_hint.setObjectName("sidebar_section_hint")
-        layout.addWidget(preview_hint)
+        info_grid.addWidget(self.lbl_height_key, 3, 0)
+        info_grid.addWidget(self.lbl_height_val, 3, 1)
 
-        # Thumbnail-Bar jetzt rechts in der Sidebar
+        info_grid.setColumnStretch(0, 0)
+        info_grid.setColumnStretch(1, 1)
+
+        # ------------------------------------------------------------
+        # VORSCHAU
+        # ------------------------------------------------------------
+        self.preview_title = QLabel("VORSCHAU")
+        self.preview_title.setObjectName("sidebar_section_header")
+        outer_layout.addWidget(self.preview_title)
+
         self.thumbnail_bar = ThumbnailBar()
         self.thumbnail_bar.setObjectName("SidebarThumbnailBar")
-        layout.addWidget(self.thumbnail_bar, stretch=1)
+        outer_layout.addWidget(self.thumbnail_bar, stretch=1)
 
-    # ------------------------------------------------------------------ #
-    # Öffentliche API
-    # ------------------------------------------------------------------ #
     def update_info(self, metadata: dict):
-        """Aktualisiert die angezeigten Metadaten."""
-        self._lbl_name.setText(metadata.get("filename", "—"))
-        self._lbl_size.setText(f"{metadata.get('size_kb', '—')} KB")
+        filename = metadata.get("filename", "—")
+        size_kb = metadata.get("size_kb", "—")
+        width = metadata.get("width", "—")
+        height = metadata.get("height", "—")
 
-        width = metadata.get("width", "?")
-        height = metadata.get("height", "?")
-        self._lbl_dims.setText(f"{width} × {height} px")
+        self.lbl_name_val.setText(str(filename))
+        self.lbl_size_val.setText(f"{size_kb} KB")
+        self.lbl_width_val.setText(f"{width} px")
+        self.lbl_height_val.setText(f"{height} px")
 
-    # ------------------------------------------------------------------ #
-    # Hilfsmethoden
-    # ------------------------------------------------------------------ #
     @staticmethod
     def _make_key_label(text: str) -> QLabel:
-        lbl = QLabel(text)
-        lbl.setObjectName("sidebar_key")
-        return lbl
+        label = QLabel(text)
+        label.setObjectName("sidebar_key")
+        return label
 
     @staticmethod
     def _make_value_label(text: str) -> QLabel:
-        lbl = QLabel(text)
-        lbl.setObjectName("sidebar_value")
-        lbl.setWordWrap(True)
-        return lbl
-
-    @staticmethod
-    def _make_separator() -> QFrame:
-        line = QFrame()
-        line.setObjectName("sidebar_separator")
-        line.setFrameShape(QFrame.Shape.HLine)
-        line.setFrameShadow(QFrame.Shadow.Plain)
-        return line
+        label = QLabel(text)
+        label.setObjectName("sidebar_value")
+        label.setWordWrap(True)
+        return label
