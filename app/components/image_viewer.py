@@ -71,6 +71,10 @@ class ImageViewer(QScrollArea):
     def zoom_out(self):
         self._set_zoom(self._zoom - ZOOM_STEP)
 
+    def set_zoom(self, factor: float):
+        """Setzt den Zoom direkt auf einen bestimmten Faktor (z.B. vom Slider)."""
+        self._set_zoom(factor)
+
     def fit_to_window(self):
         """Skaliert das Bild so, dass es ins Fenster passt."""
         if self._pixmap_original is None:

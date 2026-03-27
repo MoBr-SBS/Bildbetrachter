@@ -9,6 +9,5 @@ from .toolbar import ImageToolbar
 from .image_viewer import ImageViewer
 from .sidebar import Sidebar
 from .statusbar import ImageStatusBar
-from .thumbnail_bar import ThumbnailBar
 
-__all__ = ["ImageToolbar", "ImageViewer", "Sidebar", "ImageStatusBar", "ThumbnailBar"]
+__all__ = ["ImageToolbar", "ImageViewer", "Sidebar", "ImageStatusBar"]
