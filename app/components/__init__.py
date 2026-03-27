@@ -1,8 +1,5 @@
 """
 app.components — Unter-Package für alle UI-Komponenten.
-
-Durch die Exporte hier reicht in main_window.py ein einzelner Import:
-    from app.components import ImageToolbar, ImageViewer, Sidebar, ImageStatusBar
 """
 
 from .toolbar import ImageToolbar

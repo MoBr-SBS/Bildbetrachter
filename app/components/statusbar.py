@@ -1,8 +1,6 @@
 """
 ImageStatusBar
 Zeigt Dateiname (links) und einen Zoom-Regler (rechts) an.
-Der Zoom-Regler besteht aus einem QSlider sowie + / − Schaltflächen.
-Kommuniziert über Signale — keine Abhängigkeit zu anderen Komponenten.
 """
 
 from PyQt6.QtWidgets import (

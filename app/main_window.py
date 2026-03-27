@@ -1,13 +1,16 @@
 """
 MainWindow
-Hauptfenster der Anwendung. Orchestriert alle Komponenten:
-Toolbar, Bildanzeige, Sidebar (mit Vorschau) und Statusleiste.
+Hauptfenster der Anwendung.
 """
 
-from PyQt6.QtWidgets import QMainWindow, QWidget, QHBoxLayout
+from PyQt6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QSplitter
+from PyQt6.QtCore import Qt
 
 from app.components import ImageToolbar, ImageViewer, Sidebar, ImageStatusBar
 from app.services import ImageManager
+
+SIDEBAR_MIN_WIDTH = 190
+SIDEBAR_DEFAULT_WIDTH = 220
 
 
 class MainWindow(QMainWindow):
@@ -32,13 +35,25 @@ class MainWindow(QMainWindow):
 
         self.viewer = ImageViewer()
         self.sidebar = Sidebar()
+        self.sidebar.setMinimumWidth(SIDEBAR_MIN_WIDTH)
+
+        # QSplitter erlaubt dem Nutzer, die Sidebar per Drag zu vergrößern
+        self._splitter = QSplitter(Qt.Orientation.Horizontal)
+        self._splitter.setHandleWidth(4)
+        self._splitter.setObjectName("MainSplitter")
+        self._splitter.addWidget(self.viewer)
+        self._splitter.addWidget(self.sidebar)
+
+        # Viewer bekommt allen Stretch, Sidebar behält ihre Mindestbreite
+        self._splitter.setStretchFactor(0, 1)
+        self._splitter.setStretchFactor(1, 0)
+        self._splitter.setSizes([10000, SIDEBAR_DEFAULT_WIDTH])
 
         central = QWidget()
         layout = QHBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
-        layout.addWidget(self.viewer, stretch=1)
-        layout.addWidget(self.sidebar)
+        layout.addWidget(self._splitter)
 
         self.setCentralWidget(central)
 
@@ -49,8 +64,6 @@ class MainWindow(QMainWindow):
     def _connect_signals(self):
         # Toolbar → Aktionen
         self.toolbar.open_requested.connect(self._on_open_requested)
-        self.toolbar.zoom_in_requested.connect(self.viewer.zoom_in)
-        self.toolbar.zoom_out_requested.connect(self.viewer.zoom_out)
         self.toolbar.fit_requested.connect(self.viewer.fit_to_window)
         self.toolbar.rotate_requested.connect(self.viewer.rotate)
         self.toolbar.previous_requested.connect(self._on_previous)

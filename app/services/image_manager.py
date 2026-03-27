@@ -1,7 +1,6 @@
 """
 ImageManager
 Verwaltet die Liste der Bilddateien eines Ordners und den aktuellen Index.
-Enthält keinerlei UI-Code — reine Anwendungslogik.
 """
 
 import os

@@ -129,6 +129,22 @@ QLabel#viewer_placeholder {
 }
 
 
+/* ── Splitter ─────────────────────────────────────────────────────────── */
+
+QSplitter#MainSplitter::handle {
+    background-color: #333333;
+    width: 4px;
+}
+
+QSplitter#MainSplitter::handle:hover {
+    background-color: #606060;
+}
+
+QSplitter#MainSplitter::handle:pressed {
+    background-color: #a0a0a0;
+}
+
+
 /* ── Sidebar ─────────────────────────────────────────────────────────── */
 
 QWidget#Sidebar {
@@ -140,13 +156,31 @@ QWidget#SidebarSection {
     background-color: #222222;
 }
 
-QLabel#sidebar_title {
-    color: #a0a0a0;
+QWidget#SidebarHeader {
+    background-color: #2a2a2a;
+    border-bottom: 1px solid #333333;
+}
+
+QWidget#SidebarHeader:hover {
+    background-color: #303030;
+}
+
+QWidget#SidebarHeader[collapsed=true] {
+    background-color: #252525;
+    border-left: 2px solid #606060;
+}
+
+QLabel#toggle_arrow {
+    color: #707070;
     font-size: 10px;
+    min-width: 12px;
+}
+
+QLabel#sidebar_title {
+    color: #b0b0b0;
+    font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding-bottom: 2px;
+    letter-spacing: 0.04em;
 }
 
 QLabel#sidebar_key {
@@ -173,6 +207,25 @@ QScrollArea#ThumbScroll {
 
 QScrollArea#ThumbScroll > QWidget > QWidget {
     background-color: transparent;
+}
+
+QPushButton#thumb_size_btn {
+    background-color: #2e2e2e;
+    color: #aaaaaa;
+    border: 1px solid #3a3a3a;
+    border-radius: 3px;
+    font-size: 14px;
+    padding: 0;
+}
+
+QPushButton#thumb_size_btn:hover {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border-color: #606060;
+}
+
+QPushButton#thumb_size_btn:pressed {
+    background-color: #505050;
 }
 
 
